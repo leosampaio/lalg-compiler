@@ -1,53 +1,82 @@
-#include <stdio.h>
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
+#include <map>
 #include "lalg.h"
+
+using namespace std;
 
 // the extern C lets us link to c file
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 extern int yylex();
 extern int yylineno;
 extern char* yytext;
+
 #ifdef __cplusplus
 }
 #endif
 
-char *names[] = {NULL, "db_type", "db_name", "db_table_prefix", "db_port"};
+map<int, string> createMap();
 
-int main(void) 
-{
+int main(void) {
 
-    int ntoken, vtoken;
+    // auxilars
+    int tokenID;
 
-    ntoken = yylex();
-    while(ntoken) {
-        printf("%d\n", ntoken);
-        if(yylex() != COLON) {
-            printf("Syntax error in line %d, Expected a ':' but found %s\n", yylineno, yytext);
-            return 1;
-        }
-        vtoken = yylex();
-        switch (ntoken) {
-        case TYPE:
-        case NAME:
-        case TABLE_PREFIX:
-            if(vtoken != IDENTIFIER) {
-                printf("Syntax error in line %d, Expected an identifier but found %s\n", yylineno, yytext);
-                return 1;
-            }
-            printf("%s is set to %s\n", names[ntoken], yytext);
-            break;
-        case PORT:
-            if(vtoken != INTEGER) {
-                printf("Syntax error in line %d, Expected an integer but found %s\n", yylineno, yytext);
-                return 1;
-            }
-            printf("%s is set to %s\n", names[ntoken], yytext);
-            break;
-        default:
-            printf("Syntax error in line %d\n",yylineno);
-        }
-        ntoken = yylex();
+    tokenID = yylex();
+    map<int, string> identifiersMap = createMap();
+
+    while(tokenID != END_OF_FILE && tokenID != LEXICAL_ERROR) {
+        cout << yylineno << ": " << yytext << " - " << identifiersMap[tokenID] << endl;
+        if (tokenID == DOT) { break; }
+        tokenID = yylex();
     }
+
+    if (tokenID == LEXICAL_ERROR) {
+        cerr << "Lexical error on line " << yylineno << " :(" << endl;
+    }
+
     return 0;
+}
+
+map<int, string> createMap() {
+    map<int, string> m;
+    m[LEXICAL_ERROR] = "Error";
+    m[IDENTIFIER] = "ident";
+    m[INTEGER] = "integer";
+    m[REAL] = "real";
+    m[OP_AD] = "op_ad";
+    m[OP_MUL] = "op_mul";
+    m[PROGRAM] = "program";
+    m[BEGINN] = "begin";
+    m[END] = "end";
+    m[CONST] = "const";
+    m[VAR] = "var";
+    m[WHILE] = "while";
+    m[DO] = "do";
+    m[IF] = "if";
+    m[ELSE] = "else";
+    m[READ] = "read";
+    m[WRITE] = "write";
+    m[PROCEDURE] = "procedure";
+    m[COLON] = "colon";
+    m[ATTRIBUTION] = "attribution";
+    m[SEMICOLON] = "semicolon";
+    m[DOT] = "dot";
+    m[EQUAL] = "equal";
+    m[DIFFERENT] = "different";
+    m[LESS_THAN_OR_EQUAL] = "less_than_or_equal";
+    m[GREATER_THAN_OR_EQUAL] = "greater_than_or_equal";
+    m[GREATER_THAN] = "greater_than";
+    m[LESS_THAN] = "less_than";
+    m[PAREN_LEFT] = "paren_left";
+    m[PAREN_RIGHT] = "paren_right";
+    m[FOR] = "for";
+    m[TO] = "to";
+    m[COMMA] = "comma";
+
+    return m;
 }

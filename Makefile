@@ -1,18 +1,30 @@
 CXX=g++
+CC=gcc
 LEX=lex
-CFLAGS= -ll
-CXXFLAGS=-g -ll
+CFLAGS= -O2
+CXXFLAGS= -O2
+LIBS= -ll
 
 OBJ= build/lex.yy.o build/lalg.o
 
-all: $(OBJ)
-	$(LEX) lalg.l
-	$(CXX) -o lalg $(CXXFLAGS) $^
+all:
+	@make clean
+	@make main
+
+main: $(OBJ)
+	$(CXX) -o lalg $(CXXFLAGS) $(LIBS) $^
+
+run:
+	./lalg
 
 # compile only, C source
-build/%.o: %.c
+build/lex.yy.o: lalg.l lex.yy.c
 	@mkdir -p build
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(LEX) lalg.l
+	$(CC) -c -o build/lex.yy.o lex.yy.c $(CFLAGS)
+
+lex.yy.c:
+	$(LEX) lalg.l
 
 # compile only, C++ source
 build/%.o: %.cpp
