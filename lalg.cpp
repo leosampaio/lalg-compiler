@@ -29,14 +29,15 @@ int main(void) {
     tokenID = yylex();
     map<int, string> identifiersMap = createMap();
 
-    while(tokenID != END_OF_FILE && tokenID != LEXICAL_ERROR) {
-        cout << yylineno << ": " << yytext << " - " << identifiersMap[tokenID] << endl;
+    while(tokenID != END_OF_FILE) {
+        if (tokenID == LEXICAL_ERROR) {
+            cerr << "Lexical error on line " << yylineno << ": unexpected token '" << yytext << "\'" << endl;
+        } else {
+            cout << yylineno << ": " << yytext << " - " << identifiersMap[tokenID] << endl;
+        }
         if (tokenID == DOT) { break; }
-        tokenID = yylex();
-    }
 
-    if (tokenID == LEXICAL_ERROR) {
-        cerr << "Lexical error on line " << yylineno << " :(" << endl;
+        tokenID = yylex();
     }
 
     return 0;

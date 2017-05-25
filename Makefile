@@ -12,7 +12,7 @@ all:
 	@make main
 
 main: $(OBJ)
-	$(CXX) -o lalg $(CXXFLAGS) $(LIBS) $^
+	$(CXX) -o lalg $(CXXFLAGS) $^ $(LIBS)
 
 run:
 	./lalg
