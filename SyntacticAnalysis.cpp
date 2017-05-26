@@ -326,24 +326,52 @@ void cmd(std::vector<string>& S) {
 }
 
 void condicao(std::vector<string>& S) {
-    
+    expressao(S);
+    string token = lexicalAnalysis();
+    if (token != "equal"|| token != "different"|| token != "less_than_or_equal" || token != "less_than" 
+        ||  token != "greater_than_or_equal" || token != "greater_than") {
+        printError("= or <> or <= or < or >= or >");
+        token = panic(S);
+    } 
+
+    expressao(S);    
 }
 
 void expressao(std::vector<string>& S) {
-    
+    termo(S);
+    outros_termos(S); 
 }
 
-void outros_termos(std::vector<string>& S) {
+void outros_termos(std::vector<string>& S) { //TODO 
+    string token = lexicalAnalysis();
+    if(token == "op_ad"){
+        termo(S);
+        outros_termos(S);
+    }
+    
+    else{
+        goBackOneToken();
+    }
     
 }
 
 void termo(std::vector<string>& S) {
-    
+    op_un(S);
+    fator(S);
+    outros_termos(S);    
 }
 
 void mais_fatores(std::vector<string>& S) {
+    string token = lexicalAnalysis();
+    if(token != "op_mul"){
+        printError("* or /");
+        token = panic(S);
+    }
+    fator(S);
+    outros_termos(S);
+ }
     
-}
+
 
 void fator(std::vector<string>& S) {
     string token = lexicalAnalysis();
@@ -373,3 +401,12 @@ void numero(std::vector<string>& S) {
         printError("real or integer");
     }
 }
+
+void op_un(std::vector<string>& S) {
+    string token = lexicalAnalysis();
+    if (token == "op_ad"){}
+    else{
+        goBackOneToken();
+    }
+}
+
