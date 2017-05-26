@@ -2,7 +2,9 @@
 #include <cstdlib>
 #include <iostream>
 #include <map>
+#include <vector>
 #include "lalg.h"
+#include "SyntacticAnalysis.h"
 
 using namespace std;
 
@@ -20,27 +22,40 @@ extern char* yytext;
 #endif
 
 map<int, string> createMap();
+map<int, string> identifiersMap;
 
 int main(void) {
 
     // auxilars
-    int tokenID;
-
-    tokenID = yylex();
-    map<int, string> identifiersMap = createMap();
-
-    while(tokenID != END_OF_FILE) {
-        if (tokenID == LEXICAL_ERROR) {
-            cerr << "Lexical error on line " << yylineno << ": unexpected token '" << yytext << "\'" << endl;
-        } else {
-            cout << yylineno << ": " << yytext << " - " << identifiersMap[tokenID] << endl;
-        }
-        if (tokenID == DOT) { break; }
-
-        tokenID = yylex();
-    }
+    identifiersMap = createMap();
+    syntacticAnalysis();
 
     return 0;
+}
+
+string lexicalAnalysis() {
+    int tokenID = yylex();
+    while (tokenID == LEXICAL_ERROR) {
+        cerr << "Lexical error on line " << yylineno << ": unexpected token '" << yytext << "\'" << endl;
+        tokenID = yylex();
+    }
+    return identifiersMap[tokenID];
+}
+
+void syntacticAnalysis() {
+    vector<string> s = vector<string>();
+    return programa(s);
+}
+
+void printError(std::string expected) {
+    cerr << "Syntax Error on line "  
+        << yylineno 
+        << ": Expected '" 
+        << expected 
+        << "', found '" 
+        << yytext 
+        << "' :("
+        << endl;
 }
 
 map<int, string> createMap() {

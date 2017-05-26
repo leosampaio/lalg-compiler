@@ -5,7 +5,7 @@ CFLAGS= -O2
 CXXFLAGS= -O2
 LIBS= -ll
 
-OBJ= build/lex.yy.o build/lalg.o
+OBJ= build/lex.yy.o build/lalg.o build/SyntacticAnalysis.o
 
 all:
 	@make clean
