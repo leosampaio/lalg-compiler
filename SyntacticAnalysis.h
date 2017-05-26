@@ -33,3 +33,4 @@ void outros_termos(std::vector<std::string>& S);
 void termo(std::vector<std::string>& S);
 void mais_fatores(std::vector<std::string>& S);
 void fator(std::vector<std::string>& S);
+void op_un(std::vector<string>& S);
