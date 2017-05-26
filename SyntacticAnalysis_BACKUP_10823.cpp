@@ -179,6 +179,9 @@ void fator(std::vector<string>& S) {
 
     }
 }
+<<<<<<< HEAD
+    
+=======
 
 void numero(std::vector<string>& S) {
     string token = lexicalAnalysis();
@@ -186,3 +189,4 @@ void numero(std::vector<string>& S) {
         printError("real or integer");
     }
 }
+>>>>>>> 9f99706b82c8bfeb56beac46582e4feb68db5997

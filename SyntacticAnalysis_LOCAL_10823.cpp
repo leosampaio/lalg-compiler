@@ -33,52 +33,22 @@ void programa(std::vector<string>& S) {
 }
 
 void corpo(std::vector<string>& S) {
-    dc(S);
-    string token = lexicalAnalysis();
-    if (token != "begin") {
-        printError("begin");
-        token = panic(S);
-    }
-    comandos(S);
-    string token = lexicalAnalysis();
-    if (token != "end") {
-        printError("end");
-        token = panic(S);
-    }
-}
-
-void dc_c(std::vector<string>& S) {
-    string token = lexicalAnalysis();
-    if (token != "const") {
-        printError("const");
-        token = panic(S);
-    }
     string token = lexicalAnalysis();
     if (token != "ident") {
         printError("ident");
         token = panic(S);
     }
-    string token = lexicalAnalysis();
-    if (token != "equal") {
-        printError("=");
-        token = panic(S);
-    }
-    numero(S);
-    string token = lexicalAnalysis();
-    if (token != "semicolon") {
-        printError(";");
-        token = panic(S);
-    }
-    dc_c(S);
 }
 
 void dc(std::vector<string>& S) {
-    dc_c(S);
-    dc_v(S);
-    dc_p(S);
+    
 }
 
 void dc_v(std::vector<string>& S) {
+    
+}
+
+void dc_c(std::vector<string>& S) {
     
 }
 
@@ -179,10 +149,4 @@ void fator(std::vector<string>& S) {
 
     }
 }
-
-void numero(std::vector<string>& S) {
-    string token = lexicalAnalysis();
-    if (token != "real" && token != "integer") {
-        printError("real or integer");
-    }
-}
+    
