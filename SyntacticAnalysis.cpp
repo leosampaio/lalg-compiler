@@ -105,7 +105,7 @@ void dc_v(std::vector<string>& S) {
 }
 
 void variaveis(std::vector<string>& S) {
-    token = lexicalAnalysis();
+    string token = lexicalAnalysis();
     if (token != "ident") {
         printError("ident");
         token = panic(S);
@@ -114,7 +114,7 @@ void variaveis(std::vector<string>& S) {
 }
 
 void mais_var(std::vector<string>& S) {
-    token = lexicalAnalysis();
+    string token = lexicalAnalysis();
     if (token != "comma") {
         printError(",");
         token = panic(S);
@@ -144,7 +144,7 @@ void dc_p(std::vector<string>& S) {
 }
 
 void parametros(std::vector<string>& S) {
-    token = lexicalAnalysis();
+    string token = lexicalAnalysis();
     if (token != "paren_left") {
         printError("(");
         token = panic(S);
@@ -159,7 +159,7 @@ void parametros(std::vector<string>& S) {
 
 void lista_par(std::vector<string>& S) {
     variaveis(S);
-    token = lexicalAnalysis();
+    string token = lexicalAnalysis();
     if (token != "colon") {
         printError(":");
         token = panic(S);
@@ -169,7 +169,7 @@ void lista_par(std::vector<string>& S) {
 }
 
 void mais_par(std::vector<string>& S) {
-    token = lexicalAnalysis();
+    string token = lexicalAnalysis();
     if (token != "semicolon") {
         printError(";");
         token = panic(S);
@@ -179,7 +179,7 @@ void mais_par(std::vector<string>& S) {
 
 void corpo_p(std::vector<string>& S) {
     dc_loc(S);
-    token = lexicalAnalysis();
+    string token = lexicalAnalysis();
     if (token != "begin") {
         printError("begin");
         token = panic(S);
@@ -197,7 +197,7 @@ void dc_loc(std::vector<string>& S) {
 }
 
 void lista_arg(std::vector<string>& S) {
-    token = lexicalAnalysis();
+    string token = lexicalAnalysis();
     if (token != "paren_left") {
         printError("(");
         token = panic(S);
@@ -211,7 +211,7 @@ void lista_arg(std::vector<string>& S) {
 }
 
 void argumentos(std::vector<string>& S) {
-    token = lexicalAnalysis();
+    string token = lexicalAnalysis();
     if (token != "ident") {
         printError("ident");
         token = panic(S);
@@ -220,7 +220,7 @@ void argumentos(std::vector<string>& S) {
 }
 
 void mais_ident(std::vector<string>& S) {
-    token = lexicalAnalysis();
+    string token = lexicalAnalysis();
     if (token != "semicolon") {
         printError(";");
         token = panic(S);
@@ -229,7 +229,7 @@ void mais_ident(std::vector<string>& S) {
 }
 
 void pfalsa(std::vector<string>& S) {
-    token = lexicalAnalysis();
+    string token = lexicalAnalysis();
     if (token != "else") {
         printError("else");
         token = panic(S);
@@ -238,11 +238,93 @@ void pfalsa(std::vector<string>& S) {
 }
 
 void comandos(std::vector<string>& S) {
-    
+    string token = lexicalAnalysis();
+    if(token == "read" || token == "write" || token == "while" || token == "if" || token == "ident" || token == "begin"){
+        goBackOneToken();
+        cmd(S);
+        token = lexicalAnalysis();
+        if (token != "semicolon") {
+            printError(";");
+            token = panic(S);
+        }
+        comandos(S);
+    } else {
+        goBackOneToken();
+    }
 }
 
 void cmd(std::vector<string>& S) {
-    
+    string token = lexicalAnalysis();
+    if (token == "read")  { 
+        token = lexicalAnalysis();
+        if (token != "paren_left") {
+            printError("(");
+            token = panic(S);
+        }
+        variaveis(S);
+        token = lexicalAnalysis();
+        if (token != "paren_right") {
+            printError(")");
+            token = panic(S);
+        }
+    } else if (token == "write") {
+        token = lexicalAnalysis();
+        if (token != "paren_left") {
+            printError("(");
+            token = panic(S);
+        }
+        variaveis(S);
+        token = lexicalAnalysis();
+        if (token != "paren_right") {
+            printError(")");
+            token = panic(S);
+        }
+    } else if (token == "while") {
+        token = lexicalAnalysis();
+        if (token != "paren_left") {
+            printError("(");
+            token = panic(S);
+        }
+        condicao(S);
+        token = lexicalAnalysis();
+        if (token != "paren_right") {
+            printError(")");
+            token = panic(S);
+        }
+        token = lexicalAnalysis();
+        if (token != "do") {
+            printError("do");
+            token = panic(S);
+        }
+        cmd(S);
+    } else if (token == "if") {
+        condicao(S);
+        token = lexicalAnalysis();
+        if (token != "then") {
+            printError("then");
+            token = panic(S);
+        }
+        cmd(S);
+        pfalsa(S);
+    } else if (token == "ident") {
+        token = lexicalAnalysis();
+        if(token == "attribution"){
+            expressao(S);
+        } else {
+            goBackOneToken();
+            lista_arg(S);
+        }
+    } else if (token == "begin") {
+        comandos();
+        token = lexicalAnalysis();
+        if(token != "end"){
+            printError("end");
+            token = panic(S);
+        }
+    } else {
+        printError("read' or 'write' or 'while' or 'if' or 'ident' or 'begin");
+        token = panic(S);
+    }
 }
 
 void condicao(std::vector<string>& S) {
