@@ -4,3 +4,4 @@ build/
 .DS_Store
 Relatório.pdf
 Trabalho01.zip
+*.orig
