@@ -107,6 +107,8 @@ map<int, string> createMap() {
     m[FOR] = "for";
     m[TO] = "to";
     m[COMMA] = "comma";
+    m[TYPE_INTEGER] = "type_integer";
+    m[TYPE_REAL] = "type_real";
 
     return m;
 }

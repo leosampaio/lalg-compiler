@@ -38,7 +38,8 @@
 "for"                       return FOR;
 "to"                        return TO;
 ","                         return COMMA;
-
+"integer"					return TYPE_INTEGER;
+"real"						return TYPE_REAL;
 %{
     /* Expressões Regulares */
 %}
