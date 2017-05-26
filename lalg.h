@@ -33,3 +33,5 @@
 #define OP_AD 31
 #define OP_MUL 32
 #define COMMA 33
+#define TYPE_INTEGER 34
+#define TYPE_REAL 35
