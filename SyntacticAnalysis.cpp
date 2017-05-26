@@ -131,3 +131,10 @@ void mais_fatores(std::vector<string>& S) {
 void fator(std::vector<string>& S) {
     
 }
+
+void numero(std::vector<string>& S) {
+    string token = lexicalAnalysis();
+    if (token != "real" && token != "integer") {
+        printError("real or integer");
+    }
+}
