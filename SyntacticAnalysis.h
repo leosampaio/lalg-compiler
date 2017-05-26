@@ -7,6 +7,7 @@ std::string lexicalAnalysis();
 void syntacticAnalysis();
 std::string panic(std::vector<std::string>& S);
 void printError(std::string expected);
+void goBackOneToken();
 
 void programa(std::vector<std::string>& S);
 void corpo(std::vector<std::string>& S);

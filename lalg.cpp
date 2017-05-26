@@ -58,6 +58,10 @@ void printError(std::string expected) {
         << endl;
 }
 
+void goBackOneToken() {
+    
+}
+
 map<int, string> createMap() {
     map<int, string> m;
     m[LEXICAL_ERROR] = "Error";
