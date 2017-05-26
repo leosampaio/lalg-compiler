@@ -15,6 +15,8 @@ extern "C" {
 
 extern int yylex();
 extern int yylineno;
+extern int yyleng;
+extern FILE* yyin;
 extern char* yytext;
 
 #ifdef __cplusplus
@@ -23,6 +25,10 @@ extern char* yytext;
 
 map<int, string> createMap();
 map<int, string> identifiersMap;
+
+// globals for rolling tokens back
+string lastReadToken;
+bool didAskToGoBackOneToken = false;
 
 int main(void) {
 
@@ -34,12 +40,16 @@ int main(void) {
 }
 
 string lexicalAnalysis() {
+    if (didAskToGoBackOneToken) { didAskToGoBackOneToken = false; return lastReadToken; }
+
     int tokenID = yylex();
     while (tokenID == LEXICAL_ERROR) {
         cerr << "Lexical error on line " << yylineno << ": unexpected token '" << yytext << "\'" << endl;
         tokenID = yylex();
     }
-    return identifiersMap[tokenID];
+
+    lastReadToken = identifiersMap[tokenID];
+    return lastReadToken;
 }
 
 void syntacticAnalysis() {
@@ -59,7 +69,7 @@ void printError(std::string expected) {
 }
 
 void goBackOneToken() {
-    
+    didAskToGoBackOneToken = true;
 }
 
 map<int, string> createMap() {

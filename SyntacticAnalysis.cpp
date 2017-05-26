@@ -2,10 +2,8 @@
 
 using namespace std;
 
-#define ERROR ""
-
-string panic(std::vector<std::string>& S) {
-    return "blah";
+void panic(std::vector<std::string>& S) {
+    
 }
 
 void programa(std::vector<string>& S) {
@@ -161,14 +159,11 @@ void mais_fatores(std::vector<string>& S) {
 void fator(std::vector<string>& S) {
     string token = lexicalAnalysis();
     if (token == "ident")  { return;} 
-<<<<<<< HEAD
 
     else if (token == "real" || token == "integer") { return;}
-=======
->>>>>>> bbdfe483c7d64f25877e44bf98956d311995b907
 
     else if (token == "paren_left") {
-        expressao();
+        expressao(S);
         token = lexicalAnalysis();
         if(token != "paren_right"){
             printError(")");
@@ -176,10 +171,7 @@ void fator(std::vector<string>& S) {
         }
     }
 
-    else if (numero()) { return;}
-    
-
-    else{
+    else {
         printError("ident or numero or (");
         token = panic(S);
 
