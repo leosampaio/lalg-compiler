@@ -5,7 +5,7 @@
 
 std::string lexicalAnalysis();
 void syntacticAnalysis();
-std::string panic(std::vector<std::string>& S);
+void panic(std::vector<std::string>& S);
 void printError(std::string expected);
 void goBackOneToken();
 
@@ -35,4 +35,5 @@ void termo(std::vector<std::string>& S);
 void mais_fatores(std::vector<std::string>& S);
 void fator(std::vector<std::string>& S);
 void numero(std::vector<std::string>& S);
-void op_un(std::vector<string>& S);
+void op_un(std::vector<std::string>& S);
+void tipo_var(std::vector<std::string>& S);
