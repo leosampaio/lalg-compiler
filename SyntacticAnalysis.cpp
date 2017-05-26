@@ -161,8 +161,11 @@ void mais_fatores(std::vector<string>& S) {
 void fator(std::vector<string>& S) {
     string token = lexicalAnalysis();
     if (token == "ident")  { return;} 
+<<<<<<< HEAD
 
     else if (token == "real" || token == "integer") { return;}
+=======
+>>>>>>> bbdfe483c7d64f25877e44bf98956d311995b907
 
     else if (token == "paren_left") {
         expressao();
@@ -172,6 +175,9 @@ void fator(std::vector<string>& S) {
             token = panic(S);
         }
     }
+
+    else if (numero()) { return;}
+    
 
     else{
         printError("ident or numero or (");
