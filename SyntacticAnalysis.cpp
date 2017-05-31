@@ -26,7 +26,7 @@ void programa(std::set<string> S) {
         printError(";");
         panic(merge(S, {}));
     }
-    corpo(S);
+    corpo(merge(S, {"dot"}));
     token = lexicalAnalysis();
     if (token != "dot") {
         printError(".");
@@ -35,7 +35,7 @@ void programa(std::set<string> S) {
 }
 
 void corpo(std::set<string> S) {
-    dc(S);
+    dc(merge(S, {"begin"}));
     string token = lexicalAnalysis();
     if (token != "begin") {
         printError("begin");
