@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
+#include <algorithm>
 
 std::string lexicalAnalysis();
 void syntacticAnalysis();
