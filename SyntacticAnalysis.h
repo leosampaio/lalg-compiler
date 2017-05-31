@@ -3,6 +3,10 @@
 #include <cstdlib>
 #include <iostream>
 #include <algorithm>
+#include <map>
+
+#ifndef SYNTACTICANALYSIS_H
+#define SYNTACTICANALYSIS_H
 
 std::string lexicalAnalysis();
 void syntacticAnalysis();
@@ -39,3 +43,5 @@ void fator(std::set<std::string> S);
 void numero(std::set<std::string> S);
 void op_un(std::set<std::string> S);
 void tipo_var(std::set<std::string> S);
+
+#endif
