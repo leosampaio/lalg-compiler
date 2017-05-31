@@ -2,25 +2,29 @@
 
 using namespace std;
 
-void panic(std::vector<std::string>& S) {
-    
+void panic(std::set<std::string> S) {
+    string token = lexicalAnalysis();
+    while (find(S.begin(), S.end(), token) == S.end()) {
+        token = lexicalAnalysis();
+    }
+    goBackOneToken();
 }
 
-void programa(std::vector<string>& S) {
+void programa(std::set<string> S) {
     string token = lexicalAnalysis();
     if (token != "program") {
         printError("program");
-        panic(S);
+        panic(merge(S, {"ident"}));
     } 
     token = lexicalAnalysis();
     if (token != "ident") {
         printError("ident");
-        panic(S);
+        panic(merge(S, {"semicolon"}));
     }
     token = lexicalAnalysis();
     if (token != "semicolon") {
         printError(";");
-        panic(S);
+        panic(merge(S, {}));
     }
     corpo(S);
     token = lexicalAnalysis();
@@ -30,7 +34,7 @@ void programa(std::vector<string>& S) {
     }
 }
 
-void corpo(std::vector<string>& S) {
+void corpo(std::set<string> S) {
     dc(S);
     string token = lexicalAnalysis();
     if (token != "begin") {
@@ -45,13 +49,13 @@ void corpo(std::vector<string>& S) {
     }
 }
 
-void dc(std::vector<string>& S) {
+void dc(std::set<string> S) {
     dc_c(S);
     dc_v(S);
     dc_p(S);
 }
 
-void dc_c(std::vector<string>& S) {
+void dc_c(std::set<string> S) {
     string token = lexicalAnalysis();
     if (token == "const") {
         token = lexicalAnalysis();
@@ -76,7 +80,7 @@ void dc_c(std::vector<string>& S) {
     }
 }
 
-void dc_v(std::vector<string>& S) {
+void dc_v(std::set<string> S) {
     string token = lexicalAnalysis();
     if (token == "var") {
         variaveis(S);
@@ -97,7 +101,7 @@ void dc_v(std::vector<string>& S) {
     }
 }
 
-void variaveis(std::vector<string>& S) {
+void variaveis(std::set<string> S) {
     string token = lexicalAnalysis();
     if (token != "ident") {
         printError("ident");
@@ -106,7 +110,7 @@ void variaveis(std::vector<string>& S) {
     mais_var(S);
 }
 
-void mais_var(std::vector<string>& S) {
+void mais_var(std::set<string> S) {
     string token = lexicalAnalysis();
     if (token != "comma") {
         printError(",");
@@ -115,7 +119,7 @@ void mais_var(std::vector<string>& S) {
     variaveis(S);
 }
 
-void dc_p(std::vector<string>& S) {
+void dc_p(std::set<string> S) {
     string token = lexicalAnalysis();
     if (token == "procedure") {
         token = lexicalAnalysis();
@@ -136,7 +140,7 @@ void dc_p(std::vector<string>& S) {
     }
 }
 
-void parametros(std::vector<string>& S) {
+void parametros(std::set<string> S) {
     string token = lexicalAnalysis();
     if (token != "paren_left") {
         printError("(");
@@ -150,7 +154,7 @@ void parametros(std::vector<string>& S) {
     }
 }
 
-void lista_par(std::vector<string>& S) {
+void lista_par(std::set<string> S) {
     variaveis(S);
     string token = lexicalAnalysis();
     if (token != "colon") {
@@ -161,7 +165,7 @@ void lista_par(std::vector<string>& S) {
     mais_var(S);
 }
 
-void mais_par(std::vector<string>& S) {
+void mais_par(std::set<string> S) {
     string token = lexicalAnalysis();
     if (token != "semicolon") {
         printError(";");
@@ -170,7 +174,7 @@ void mais_par(std::vector<string>& S) {
     lista_par(S);
 }
 
-void corpo_p(std::vector<string>& S) {
+void corpo_p(std::set<string> S) {
     dc_loc(S);
     string token = lexicalAnalysis();
     if (token != "begin") {
@@ -185,11 +189,11 @@ void corpo_p(std::vector<string>& S) {
     }
 }
 
-void dc_loc(std::vector<string>& S) {
+void dc_loc(std::set<string> S) {
     dc_v(S);
 }
 
-void lista_arg(std::vector<string>& S) {
+void lista_arg(std::set<string> S) {
     string token = lexicalAnalysis();
     if (token != "paren_left") {
         printError("(");
@@ -203,7 +207,7 @@ void lista_arg(std::vector<string>& S) {
     }
 }
 
-void argumentos(std::vector<string>& S) {
+void argumentos(std::set<string> S) {
     string token = lexicalAnalysis();
     if (token != "ident") {
         printError("ident");
@@ -212,7 +216,7 @@ void argumentos(std::vector<string>& S) {
     cmd(S);
 }
 
-void mais_ident(std::vector<string>& S) {
+void mais_ident(std::set<string> S) {
     string token = lexicalAnalysis();
     if (token != "semicolon") {
         printError(";");
@@ -221,7 +225,7 @@ void mais_ident(std::vector<string>& S) {
     argumentos(S);
 }
 
-void pfalsa(std::vector<string>& S) {
+void pfalsa(std::set<string> S) {
     string token = lexicalAnalysis();
     if (token != "else") {
         printError("else");
@@ -230,7 +234,7 @@ void pfalsa(std::vector<string>& S) {
     cmd(S);
 }
 
-void comandos(std::vector<string>& S) {
+void comandos(std::set<string> S) {
     string token = lexicalAnalysis();
     if(token == "read" || token == "write" || token == "while" || token == "if" || token == "ident" || token == "begin"){
         goBackOneToken();
@@ -246,7 +250,7 @@ void comandos(std::vector<string>& S) {
     }
 }
 
-void cmd(std::vector<string>& S) {
+void cmd(std::set<string> S) {
     string token = lexicalAnalysis();
     if (token == "read")  { 
         token = lexicalAnalysis();
@@ -320,7 +324,7 @@ void cmd(std::vector<string>& S) {
     }
 }
 
-void condicao(std::vector<string>& S) {
+void condicao(std::set<string> S) {
     expressao(S);
     string token = lexicalAnalysis();
     if (token != "equal"|| token != "different"|| token != "less_than_or_equal" || token != "less_than" 
@@ -332,12 +336,12 @@ void condicao(std::vector<string>& S) {
     expressao(S);    
 }
 
-void expressao(std::vector<string>& S) {
+void expressao(std::set<string> S) {
     termo(S);
     outros_termos(S); 
 }
 
-void outros_termos(std::vector<string>& S) { //TODO 
+void outros_termos(std::set<string> S) { //TODO 
     string token = lexicalAnalysis();
     if(token == "op_ad"){
         termo(S);
@@ -350,13 +354,13 @@ void outros_termos(std::vector<string>& S) { //TODO
     
 }
 
-void termo(std::vector<string>& S) {
+void termo(std::set<string> S) {
     op_un(S);
     fator(S);
     outros_termos(S);    
 }
 
-void mais_fatores(std::vector<string>& S) {
+void mais_fatores(std::set<string> S) {
     string token = lexicalAnalysis();
     if(token != "op_mul"){
         printError("* or /");
@@ -368,7 +372,7 @@ void mais_fatores(std::vector<string>& S) {
     
 
 
-void fator(std::vector<string>& S) {
+void fator(std::set<string> S) {
     string token = lexicalAnalysis();
     if (token == "ident")  { return;} 
 
@@ -393,14 +397,14 @@ void fator(std::vector<string>& S) {
     }
 }
 
-void numero(std::vector<string>& S) {
+void numero(std::set<string> S) {
     string token = lexicalAnalysis();
     if (token != "real" && token != "integer") {
         printError("real or integer");
     }
 }
 
-void op_un(std::vector<string>& S) {
+void op_un(std::set<string> S) {
     string token = lexicalAnalysis();
     if (token == "op_ad"){}
     else{
@@ -408,7 +412,7 @@ void op_un(std::vector<string>& S) {
     }
 }
 
-void tipo_var(std::vector<string>& S) {
+void tipo_var(std::set<string> S) {
     string token = lexicalAnalysis();
     if (token != "type_real" && token != "type_integer") {
         printError("real or integer");

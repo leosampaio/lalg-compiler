@@ -2,7 +2,7 @@ CXX=g++
 CC=gcc
 LEX=lex
 CFLAGS= -O2
-CXXFLAGS= -O2
+CXXFLAGS= -O2 -std=c++0x
 LIBS= -ll
 
 OBJ= build/lex.yy.o build/lalg.o build/SyntacticAnalysis.o

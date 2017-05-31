@@ -53,7 +53,8 @@ string lexicalAnalysis() {
 }
 
 void syntacticAnalysis() {
-    vector<string> s = vector<string>();
+    set<string> s;
+    s.insert("end_of_file");
     return programa(s);
 }
 
@@ -70,6 +71,11 @@ void printError(std::string expected) {
 
 void goBackOneToken() {
     didAskToGoBackOneToken = true;
+}
+
+std::set<std::string> merge(std::set<std::string>& S, std::set<std::string> extra) {
+    S.insert(extra.begin(), extra.end());
+    return S;
 }
 
 map<int, string> createMap() {
@@ -109,6 +115,7 @@ map<int, string> createMap() {
     m[COMMA] = "comma";
     m[TYPE_INTEGER] = "type_integer";
     m[TYPE_REAL] = "type_real";
+    m[END_OF_FILE] = "end_of_file";
 
     return m;
 }
