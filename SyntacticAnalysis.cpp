@@ -43,7 +43,7 @@ void programa(set<string> S) {
     token = lexicalAnalysis();
     if (token != "semicolon") {
         printError(";");
-        panic(merge(S, first["corpo"]));
+        panic(merge(S, first("corpo")));
     }
     corpo(merge(S, {"dot"}));
     token = lexicalAnalysis();
@@ -58,9 +58,9 @@ void corpo(set<string> S) {
     string token = lexicalAnalysis();
     if (token != "begin") {
         printError("begin");
-        panic(S);
+        panic(merge(S, first("comandos")));
     }
-    comandos(S);
+    comandos(merge(S, {"end"}));
     token = lexicalAnalysis();
     if (token != "end") {
         printError("end");
@@ -80,18 +80,18 @@ void dc_c(set<string> S) {
         token = lexicalAnalysis();
         if (token != "ident") {
             printError("ident");
-            panic(S);
+            panic(merge(S, {"equal"}));
         }
         token = lexicalAnalysis();
         if (token != "equal") {
             printError("=");
-            panic(S);
+            panic(merge(S, first("numero")));
         }
-        numero(S);
+        numero(merge(S, {"semicolon"}));
         token = lexicalAnalysis();
         if (token != "semicolon") {
             printError(";");
-            panic(S);
+            panic(merge(S, first("dc_c")));
         }
         dc_c(S);
     } else {
@@ -102,17 +102,17 @@ void dc_c(set<string> S) {
 void dc_v(set<string> S) {
     string token = lexicalAnalysis();
     if (token == "var") {
-        variaveis(S);
+        variaveis(merge(S, {"colon"}));
         token = lexicalAnalysis();
         if (token != "colon") {
             printError(":");
-            panic(S);
+            panic(merge(S, first("tipo_var")));
         }
-        tipo_var(S);
+        tipo_var(merge(S, {"semicolon"}));
         token = lexicalAnalysis();
         if (token != "semicolon") {
             printError(";");
-            panic(S);
+            panic(merge(S, first("dc_v")));
         }
         dc_v(S);
     } else {
@@ -124,18 +124,18 @@ void variaveis(set<string> S) {
     string token = lexicalAnalysis();
     if (token != "ident") {
         printError("ident");
-        panic(S);
+        panic(merge(S, first("mais_var")));
     }
-    mais_var(S);
+    mais_var(S);    //faltou
 }
 
 void mais_var(set<string> S) {
     string token = lexicalAnalysis();
     if (token != "comma") {
         printError(",");
-        panic(S);
+        panic(merge(S, first("variaveis")));
     }
-    variaveis(S);
+    variaveis(S);   //faltou
 }
 
 void dc_p(set<string> S) {
@@ -144,16 +144,16 @@ void dc_p(set<string> S) {
         token = lexicalAnalysis();
         if (token != "ident") {
             printError("ident");
-            panic(S);
+            panic(merge(S, first("parametros")));
         }
-        parametros(S);
+        parametros(merge(S, {"semicolon"}));
         token = lexicalAnalysis();
         if (token != "semicolon") {
             printError(";");
-            panic(S);
+            panic(merge(S, first("corpo_p")));
         }
-        corpo_p(S);
-        dc_p(S);
+        corpo_p(S);     //faltou
+        dc_p(S);    //faltou
     } else {
         goBackOneToken();
     }
@@ -163,9 +163,9 @@ void parametros(set<string> S) {
     string token = lexicalAnalysis();
     if (token != "paren_left") {
         printError("(");
-        panic(S);
+        panic(merge(S, first("lista_par")));
     }
-    lista_par(S);
+    lista_par(merge(S, {"paren_right"}));
     token = lexicalAnalysis();
     if (token != "paren_right") {
         printError(")");
@@ -178,19 +178,19 @@ void lista_par(set<string> S) {
     string token = lexicalAnalysis();
     if (token != "colon") {
         printError(":");
-        panic(S);
+        panic(merge(S, first("tipo_var")));
     }
-    tipo_var(S);
-    mais_var(S);
+    tipo_var(S);    //faltou
+    mais_var(S);    //faltou
 }
 
 void mais_par(set<string> S) {
     string token = lexicalAnalysis();
     if (token != "semicolon") {
         printError(";");
-        panic(S);
+        panic(merge(S, first("lista_par")));
     }
-    lista_par(S);
+    lista_par(S);   //faltou
 }
 
 void corpo_p(set<string> S) {
@@ -198,9 +198,9 @@ void corpo_p(set<string> S) {
     string token = lexicalAnalysis();
     if (token != "begin") {
         printError("begin");
-        panic(S);
+        panic(merge(S, first("comandos")));
     }
-    comandos(S);
+    comandos(merge(S, {"end"}));
     token = lexicalAnalysis();
     if (token != "end") {
         printError("end");
@@ -216,9 +216,9 @@ void lista_arg(set<string> S) {
     string token = lexicalAnalysis();
     if (token != "paren_left") {
         printError("(");
-        panic(S);
+        panic(merge(S, first("argumentos")));
     }
-    argumentos(S);
+    argumentos(merge(S, {"paren_right"}));
     token = lexicalAnalysis();
     if (token != "paren_right") {
         printError(")");
@@ -230,7 +230,7 @@ void argumentos(set<string> S) {
     string token = lexicalAnalysis();
     if (token != "ident") {
         printError("ident");
-        panic(S);
+        panic(merge(S, first("cmd")));
     }
     cmd(S);
 }
@@ -239,31 +239,31 @@ void mais_ident(set<string> S) {
     string token = lexicalAnalysis();
     if (token != "semicolon") {
         printError(";");
-        panic(S);
+        panic(merge(S, first("argumentos")));
     }
-    argumentos(S);
+    argumentos(S);  //faltou
 }
 
 void pfalsa(set<string> S) {
     string token = lexicalAnalysis();
     if (token != "else") {
         printError("else");
-        panic(S);
+        panic(merge(S, first("cmd")));
     }
-    cmd(S);
+    cmd(S);     //faltou
 }
 
 void comandos(set<string> S) {
     string token = lexicalAnalysis();
     if(token == "read" || token == "write" || token == "while" || token == "if" || token == "ident" || token == "begin"){
         goBackOneToken();
-        cmd(S);
+        cmd(merge(S, {"semicolon"}));
         token = lexicalAnalysis();
         if (token != "semicolon") {
             printError(";");
-            panic(S);
+            panic(merge(S, first("comandos")));
         }
-        comandos(S);
+        comandos(S);    //faltou
     } else {
         goBackOneToken();
     }
@@ -275,9 +275,9 @@ void cmd(set<string> S) {
         token = lexicalAnalysis();
         if (token != "paren_left") {
             printError("(");
-            panic(S);
+            panic(merge(S, first("variaveis")));
         }
-        variaveis(S);
+        variaveis(merge(S, {"paren_right"}));
         token = lexicalAnalysis();
         if (token != "paren_right") {
             printError(")");
@@ -287,9 +287,9 @@ void cmd(set<string> S) {
         token = lexicalAnalysis();
         if (token != "paren_left") {
             printError("(");
-            panic(S);
+            panic(merge(S, first("variaveis"))); 
         }
-        variaveis(S);
+        variaveis(merge(S, {"paren_right"}));
         token = lexicalAnalysis();
         if (token != "paren_right") {
             printError(")");
@@ -299,39 +299,39 @@ void cmd(set<string> S) {
         token = lexicalAnalysis();
         if (token != "paren_left") {
             printError("(");
-            panic(S);
+            panic(merge(S, first("condicao")));
         }
-        condicao(S);
+        condicao(merge(S, {"paren_right"}));
         token = lexicalAnalysis();
         if (token != "paren_right") {
             printError(")");
-            panic(S);
+            panic(merge(S, {"do"}));
         }
         token = lexicalAnalysis();
         if (token != "do") {
             printError("do");
-            panic(S);
+            panic(merge(S, first("cmd")));
         }
-        cmd(S);
+        cmd(S);     //faltou
     } else if (token == "if") {
-        condicao(S);
+        condicao(merge(S, {"then"}));
         token = lexicalAnalysis();
         if (token != "then") {
             printError("then");
-            panic(S);
+            panic(merge(S, first("corpo")));
         }
-        cmd(S);
-        pfalsa(S);
+        cmd(S);     //faltou
+        pfalsa(S);  //faltou
     } else if (token == "ident") {
         token = lexicalAnalysis();
         if(token == "attribution"){
-            expressao(S);
+            expressao(S);   //faltou
         } else {
             goBackOneToken();
-            lista_arg(S);
+            lista_arg(S);   //faltou
         }
     } else if (token == "begin") {
-        comandos(S);
+        comandos(merge(S, {"end"}));
         token = lexicalAnalysis();
         if(token != "end"){
             printError("end");
@@ -349,10 +349,9 @@ void condicao(set<string> S) {
     if (token != "equal"|| token != "different"|| token != "less_than_or_equal" || token != "less_than" 
         ||  token != "greater_than_or_equal" || token != "greater_than") {
         printError("= or <> or <= or < or >= or >");
-        panic(S);
+        panic(merge(S, first("expressao")));
     } 
-
-    expressao(S);    
+    expressao(S);    //faltou
 }
 
 void expressao(set<string> S) {
@@ -364,9 +363,8 @@ void outros_termos(set<string> S) { //TODO
     string token = lexicalAnalysis();
     if(token == "op_ad"){
         termo(S);
-        outros_termos(S);
+        outros_termos(S);   //faltou
     }
-    
     else{
         goBackOneToken();
     }
@@ -383,10 +381,10 @@ void mais_fatores(set<string> S) {
     string token = lexicalAnalysis();
     if(token != "op_mul"){
         printError("* or /");
-        panic(S);
+        panic(merge(S, first("fator")));
     }
-    fator(S);
-    outros_termos(S);
+    fator(S);   //faltou
+    outros_termos(S);   //faltou
  }
     
 
@@ -396,7 +394,7 @@ void fator(set<string> S) {
     if (token == "ident")  { return;} 
 
     else if (token == "paren_left") {
-        expressao(S);
+        expressao(merge(S, {"paren_right"}));   
         token = lexicalAnalysis();
         if(token != "paren_right"){
             printError(")");
@@ -405,7 +403,7 @@ void fator(set<string> S) {
     }
 
     else if (token != "real" && token != "integer") { 
-        numero(S); 
+        numero(S);  //faltou
         goBackOneToken();
         return; 
     }
@@ -420,13 +418,16 @@ void numero(set<string> S) {
     string token = lexicalAnalysis();
     if (token != "real" && token != "integer") {
         printError("real or integer");
+        panic(S);
     }
 }
 
 void op_un(set<string> S) {
     string token = lexicalAnalysis();
-    if (token == "op_ad"){}
-    else{
+    if (token == "op_ad"){
+        printError("op_ad");
+        panic(S);
+    } else{
         goBackOneToken();
     }
 }
@@ -435,6 +436,7 @@ void tipo_var(set<string> S) {
     string token = lexicalAnalysis();
     if (token != "type_real" && token != "type_integer") {
         printError("real or integer");
+        panic(S);
     }
 }
 
