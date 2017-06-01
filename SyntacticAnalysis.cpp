@@ -2,9 +2,24 @@
 
 using namespace std;
 
-map<const string, set<string> > first = {
-    {"corpo", {"const", "var", "procedure"}}
-};
+map<const string, set<string> > fm;
+set<string> first(string token) {
+    static bool executedOnce = false;
+    if(!executedOnce) {
+        fm["corpo"] = merge(fm["dc"], {"begin"});
+        fm["dc"] = merge(merge(fm["dc_c"], fm["dc_v"]), fm["dc_p"]);
+        fm["dc_c"] = {"const"};
+        fm["dc_v"] = {"var"};
+        fm["tipo_var"] = {"real", "integer"};
+        fm["variaveis"] = {"ident"};
+        fm["mais_var"] = {"comma"};
+        fm["dc_p"] = {"procedure"};
+        fm["parametros"] = {"paren_left"};
+        fm["lista_par"] = fm["variaveis"];
+        executedOnce = true;
+    }
+    return fm[token];
+}
 
 void panic(set<string> S) {
     string token = lexicalAnalysis();

@@ -73,7 +73,7 @@ void goBackOneToken() {
     didAskToGoBackOneToken = true;
 }
 
-std::set<std::string> merge(std::set<std::string>& S, std::set<std::string> extra) {
+std::set<std::string> merge(std::set<std::string> S, std::set<std::string> extra) {
     S.insert(extra.begin(), extra.end());
     return S;
 }

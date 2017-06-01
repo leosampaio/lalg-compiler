@@ -13,7 +13,7 @@ void syntacticAnalysis();
 void panic(std::set<std::string> S);
 void printError(std::string expected);
 void goBackOneToken();
-std::set<std::string> merge(std::set<std::string>& S, std::set<std::string> extra);
+std::set<std::string> merge(std::set<std::string> S, std::set<std::string> extra);
 
 void programa(std::set<std::string> S);
 void corpo(std::set<std::string> S);
