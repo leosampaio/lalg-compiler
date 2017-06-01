@@ -69,8 +69,8 @@ void corpo(set<string> S) {
 }
 
 void dc(set<string> S) {
-    dc_c(S);
-    dc_v(S);
+    dc_c(merge(S, first("dc_v")));
+    dc_v(merge(S, first("dc_p")));
     dc_p(S);
 }
 
@@ -180,8 +180,8 @@ void lista_par(set<string> S) {
         printError(":");
         panic(merge(S, first("tipo_var")));
     }
-    tipo_var(S);    //faltou
-    mais_var(S);    //faltou
+    tipo_var(merge(S, first("mais_var")));
+    mais_var(S);
 }
 
 void mais_par(set<string> S) {
@@ -190,7 +190,7 @@ void mais_par(set<string> S) {
         printError(";");
         panic(merge(S, first("lista_par")));
     }
-    lista_par(S);   //faltou
+    lista_par(S);
 }
 
 void corpo_p(set<string> S) {
@@ -241,7 +241,7 @@ void mais_ident(set<string> S) {
         printError(";");
         panic(merge(S, first("argumentos")));
     }
-    argumentos(S);  //faltou
+    argumentos(S);
 }
 
 void pfalsa(set<string> S) {
@@ -250,7 +250,7 @@ void pfalsa(set<string> S) {
         printError("else");
         panic(merge(S, first("cmd")));
     }
-    cmd(S);     //faltou
+    cmd(S);
 }
 
 void comandos(set<string> S) {
@@ -263,7 +263,7 @@ void comandos(set<string> S) {
             printError(";");
             panic(merge(S, first("comandos")));
         }
-        comandos(S);    //faltou
+        comandos(S);
     } else {
         goBackOneToken();
     }
@@ -312,7 +312,7 @@ void cmd(set<string> S) {
             printError("do");
             panic(merge(S, first("cmd")));
         }
-        cmd(S);     //faltou
+        cmd(S);
     } else if (token == "if") {
         condicao(merge(S, {"then"}));
         token = lexicalAnalysis();
@@ -320,15 +320,15 @@ void cmd(set<string> S) {
             printError("then");
             panic(merge(S, first("corpo")));
         }
-        cmd(S);     //faltou
-        pfalsa(S);  //faltou
+        cmd(merge(S, first("pfalsa")));
+        pfalsa(S);
     } else if (token == "ident") {
         token = lexicalAnalysis();
         if(token == "attribution"){
-            expressao(S);   //faltou
+            expressao(S);
         } else {
             goBackOneToken();
-            lista_arg(S);   //faltou
+            lista_arg(S);
         }
     } else if (token == "begin") {
         comandos(merge(S, {"end"}));
@@ -351,7 +351,7 @@ void condicao(set<string> S) {
         printError("= or <> or <= or < or >= or >");
         panic(merge(S, first("expressao")));
     } 
-    expressao(S);    //faltou
+    expressao(S);
 }
 
 void expressao(set<string> S) {
@@ -363,7 +363,7 @@ void outros_termos(set<string> S) { //TODO
     string token = lexicalAnalysis();
     if(token == "op_ad"){
         termo(S);
-        outros_termos(S);   //faltou
+        outros_termos(S);
     }
     else{
         goBackOneToken();
@@ -383,8 +383,8 @@ void mais_fatores(set<string> S) {
         printError("* or /");
         panic(merge(S, first("fator")));
     }
-    fator(S);   //faltou
-    outros_termos(S);   //faltou
+    fator(merge(S, first("outros_termos")));
+    outros_termos(S);
  }
     
 
@@ -407,7 +407,6 @@ void fator(set<string> S) {
         goBackOneToken();
         return; 
     }
-    
     else{
         printError("ident or numero or (");
         panic(S);
