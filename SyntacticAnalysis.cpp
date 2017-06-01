@@ -126,7 +126,7 @@ void variaveis(set<string> S) {
         printError("ident");
         panic(merge(S, first("mais_var")));
     }
-    mais_var(S);    //faltou
+    mais_var(S);
 }
 
 void mais_var(set<string> S) {
@@ -135,7 +135,7 @@ void mais_var(set<string> S) {
         printError(",");
         panic(merge(S, first("variaveis")));
     }
-    variaveis(S);   //faltou
+    variaveis(S);
 }
 
 void dc_p(set<string> S) {
@@ -152,8 +152,8 @@ void dc_p(set<string> S) {
             printError(";");
             panic(merge(S, first("corpo_p")));
         }
-        corpo_p(S);     //faltou
-        dc_p(S);    //faltou
+        corpo_p(merge(S, first("dc_p")));
+        dc_p(S);
     } else {
         goBackOneToken();
     }
