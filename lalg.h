@@ -35,3 +35,4 @@
 #define COMMA 33
 #define TYPE_INTEGER 34
 #define TYPE_REAL 35
+#define THEN 36

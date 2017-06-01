@@ -54,18 +54,17 @@ string lexicalAnalysis() {
 
 void syntacticAnalysis() {
     set<string> s;
-    s.insert("end_of_file");
     return programa(s);
 }
 
 void printError(std::string expected) {
     cerr << "Syntax Error on line "  
         << yylineno 
-        << ": Expected '" 
-        << expected 
-        << "', found '" 
+        << ": Found '" 
         << yytext 
-        << "' :("
+        << "', expected '" 
+        << expected
+        << "'"
         << endl;
 }
 
@@ -115,6 +114,7 @@ map<int, string> createMap() {
     m[COMMA] = "comma";
     m[TYPE_INTEGER] = "type_integer";
     m[TYPE_REAL] = "type_real";
+    m[THEN] = "then";
     m[END_OF_FILE] = "end_of_file";
 
     return m;

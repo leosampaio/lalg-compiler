@@ -7,7 +7,7 @@ set<string> first(string token) {
     static bool executedOnce = false;
     if(!executedOnce) {
         fm["programa"] = {"program"};
-        fm["tipo_var"] = {"real", "integer"};
+        fm["tipo_var"] = {"type_real", "type_integer"};
         fm["variaveis"] = {"ident"};
         fm["mais_var"] = {"comma"};
         fm["dc_p"] = {"procedure"};
@@ -20,7 +20,7 @@ set<string> first(string token) {
         fm["cmd"] = {"read", "write", "while", "if", "ident", "begin"};
         fm["outros_termos"] = {"op_ad"};
         fm["mais_fatores"] = {"op_mul"};
-        fm["numero"] = {"type_real", "type_integer"};
+        fm["numero"] = {"real", "integer"};
         fm["op_un"] = {"op_ad"};
 
         fm["dc_v"] = merge({"var"}, fm["dc_p"]);
@@ -42,6 +42,9 @@ set<string> first(string token) {
 }
 
 void panic(set<string> S) {
+    goBackOneToken();
+    // for(set<string>::iterator iter=S.begin(); iter!=S.end();++iter) { cout<<(*iter)<<", "; }
+    // cout << "TOKEN: " << lexicalAnalysis() << endl; goBackOneToken();
     string token = lexicalAnalysis();
     while (find(S.begin(), S.end(), token) == S.end()) {
         token = lexicalAnalysis();
@@ -69,7 +72,11 @@ void programa(set<string> S) {
     token = lexicalAnalysis();
     if (token != "dot") {
         printError(".");
-        panic(S);
+        panic(merge(S, {"end_of_file"}));
+    }
+    token = lexicalAnalysis();
+    if (token != "end_of_file") {
+        printError("end of file");
     }
 }
 
@@ -151,11 +158,10 @@ void variaveis(set<string> S) {
 
 void mais_var(set<string> S) {
     string token = lexicalAnalysis();
-    if (token != "comma") {
-        printError(",");
-        panic(merge(S, first("variaveis")));
+    if (token == "comma") {
+        variaveis(S);
     }
-    variaveis(S);
+    goBackOneToken();
 }
 
 void dc_p(set<string> S) {
@@ -194,7 +200,7 @@ void parametros(set<string> S) {
 }
 
 void lista_par(set<string> S) {
-    variaveis(S);
+    variaveis(merge(S, {"colon"}));
     string token = lexicalAnalysis();
     if (token != "colon") {
         printError(":");
@@ -214,7 +220,7 @@ void mais_par(set<string> S) {
 }
 
 void corpo_p(set<string> S) {
-    dc_loc(S);
+    dc_loc(merge(S, {"begin"}));
     string token = lexicalAnalysis();
     if (token != "begin") {
         printError("begin");
@@ -224,6 +230,11 @@ void corpo_p(set<string> S) {
     token = lexicalAnalysis();
     if (token != "end") {
         printError("end");
+        panic(merge(S, {"semicolon"}));
+    }
+    token = lexicalAnalysis();
+    if (token != "semicolon") {
+        printError(";");
         panic(S);
     }
 }
@@ -252,25 +263,22 @@ void argumentos(set<string> S) {
         printError("ident");
         panic(merge(S, first("cmd")));
     }
-    cmd(S);
+    mais_ident(S);
 }
 
 void mais_ident(set<string> S) {
     string token = lexicalAnalysis();
-    if (token != "semicolon") {
-        printError(";");
-        panic(merge(S, first("argumentos")));
+    if (token == "semicolon") {
+        argumentos(S);
     }
-    argumentos(S);
+    goBackOneToken();
 }
 
 void pfalsa(set<string> S) {
     string token = lexicalAnalysis();
-    if (token != "else") {
-        printError("else");
-        panic(merge(S, first("cmd")));
+    if (token == "else") {
+        cmd(S);
     }
-    cmd(S);
 }
 
 void comandos(set<string> S) {
@@ -344,11 +352,14 @@ void cmd(set<string> S) {
         pfalsa(S);
     } else if (token == "ident") {
         token = lexicalAnalysis();
-        if(token == "attribution"){
+        if (token == "attribution"){
             expressao(S);
-        } else {
+        } else if (token == "paren_left") {
             goBackOneToken();
             lista_arg(S);
+        } else {
+            printError(":= or (");
+            panic(merge(S, first("corpo")));
         }
     } else if (token == "begin") {
         comandos(merge(S, {"end"}));
@@ -366,8 +377,8 @@ void cmd(set<string> S) {
 void condicao(set<string> S) {
     expressao(S);
     string token = lexicalAnalysis();
-    if (token != "equal"|| token != "different"|| token != "less_than_or_equal" || token != "less_than" 
-        ||  token != "greater_than_or_equal" || token != "greater_than") {
+    if (token != "equal" && token != "different" && token != "less_than_or_equal" && token != "less_than" 
+        &&  token != "greater_than_or_equal" && token != "greater_than") {
         printError("= or <> or <= or < or >= or >");
         panic(merge(S, first("expressao")));
     } 

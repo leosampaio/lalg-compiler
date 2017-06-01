@@ -23,6 +23,7 @@
 "read"                      return READ;
 "write"                     return WRITE;
 "procedure"                 return PROCEDURE;
+"then"                      return THEN;
 ":"                         return COLON;
 ":="                        return ATTRIBUTION;
 ";"                         return SEMICOLON;
