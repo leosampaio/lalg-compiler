@@ -6,16 +6,36 @@ map<const string, set<string> > fm;
 set<string> first(string token) {
     static bool executedOnce = false;
     if(!executedOnce) {
-        fm["corpo"] = merge(fm["dc"], {"begin"});
-        fm["dc"] = merge(merge(fm["dc_c"], fm["dc_v"]), fm["dc_p"]);
-        fm["dc_c"] = {"const"};
-        fm["dc_v"] = {"var"};
+        fm["programa"] = {"program"};
         fm["tipo_var"] = {"real", "integer"};
         fm["variaveis"] = {"ident"};
         fm["mais_var"] = {"comma"};
         fm["dc_p"] = {"procedure"};
         fm["parametros"] = {"paren_left"};
+        fm["mais_par"] = {"semicolon"};
+        fm["lista_arg"] = {"paren_left"};
+        fm["argumentos"] = {"ident"};
+        fm["mais_ident"] = {"semicolon"};
+        fm["pfalsa"] = {"else"};
+        fm["cmd"] = {"read", "write", "while", "if", "ident", "begin"};
+        fm["outros_termos"] = {"op_ad"};
+        fm["mais_fatores"] = {"op_mul"};
+        fm["numero"] = {"type_real", "type_integer"};
+        fm["op_un"] = {"op_ad"};
+
+        fm["dc_v"] = merge({"var"}, fm["dc_p"]);
+        fm["dc_c"] = merge({"const"}, fm["dc_v"]);
+        fm["dc"] = merge(merge(fm["dc_c"], fm["dc_v"]), fm["dc_p"]);
+        fm["corpo"] = merge(fm["dc"], {"begin"});
+        fm["dc_loc"] = fm["dc_v"];
         fm["lista_par"] = fm["variaveis"];
+        fm["corpo_p"] = merge(fm["dc_loc"], {"begin"});
+        fm["comandos"] = fm["cmd"];
+        fm["fator"] = merge({"ident", "paren_left"}, fm["numero"]);
+        fm["termo"] = merge(fm["op_un"], fm["fator"]);
+        fm["expressao"] = fm["termo"];
+        fm["condicao"] = fm["expressao"];
+        
         executedOnce = true;
     }
     return fm[token];
@@ -355,14 +375,14 @@ void condicao(set<string> S) {
 }
 
 void expressao(set<string> S) {
-    termo(S);
+    termo(merge(S, first("outros_termos")));
     outros_termos(S); 
 }
 
-void outros_termos(set<string> S) { //TODO 
+void outros_termos(set<string> S) {
     string token = lexicalAnalysis();
     if(token == "op_ad"){
-        termo(S);
+        termo(merge(S, first("outros_termos")));
         outros_termos(S);
     }
     else{
@@ -372,8 +392,8 @@ void outros_termos(set<string> S) { //TODO
 }
 
 void termo(set<string> S) {
-    op_un(S);
-    fator(S);
+    op_un(merge(S, first("fator")));
+    fator(merge(S, first("outros_termos")));
     outros_termos(S);    
 }
 
@@ -402,9 +422,9 @@ void fator(set<string> S) {
         }
     }
 
-    else if (token != "real" && token != "integer") { 
-        numero(S);  //faltou
+    else if (token != "real" && token != "integer") {
         goBackOneToken();
+        numero(S);
         return; 
     }
     else{
