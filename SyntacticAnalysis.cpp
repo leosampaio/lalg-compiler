@@ -43,12 +43,18 @@ set<string> first(string token) {
 
 void panic(set<string> S) {
     goBackOneToken();
-    // for(set<string>::iterator iter=S.begin(); iter!=S.end();++iter) { cout<<(*iter)<<", "; }
-    // cout << "TOKEN: " << lexicalAnalysis() << endl; goBackOneToken();
     string token = lexicalAnalysis();
+
+    // cout << "TOKEN: \t\t" << lexicalAnalysis() << endl; goBackOneToken();
+    // cout << "SYNC TOKENS: \t";
+    // for (set<string>::iterator iter=S.begin(); iter!=S.end();++iter) { cout<<(*iter)<<", "; }
+    // cout << endl << "IGNORED: \t";
+
     while (find(S.begin(), S.end(), token) == S.end()) {
+        // cout << token << ",";
         token = lexicalAnalysis();
     }
+    // cout << endl;
     goBackOneToken();
 }
 
@@ -81,11 +87,19 @@ void programa(set<string> S) {
 }
 
 void corpo(set<string> S) {
-    dc(merge(S, {"begin"}));
     string token = lexicalAnalysis();
-    if (token != "begin") {
-        printError("begin");
-        panic(merge(S, first("comandos")));
+    while (true) {
+        if (token != "begin" && token != "const" && token != "var" && token != "procedure") {
+            printError("const, var, procedure or begin");
+            panic({"begin", "const", "if", "while", "write", "read", "var", "procedure"});
+        } 
+        if (token == "begin" || token == "if" || token == "while" || token == "write" || token == "read") {
+            break;
+        } else {
+            goBackOneToken();
+            dc(merge(S, {"begin"}));
+        }
+        token = lexicalAnalysis();
     }
     comandos(merge(S, {"end"}));
     token = lexicalAnalysis();
@@ -220,11 +234,19 @@ void mais_par(set<string> S) {
 }
 
 void corpo_p(set<string> S) {
-    dc_loc(merge(S, {"begin"}));
     string token = lexicalAnalysis();
-    if (token != "begin") {
-        printError("begin");
-        panic(merge(S, first("comandos")));
+    while (true) {
+        if (token != "begin" && token != "const" && token != "var" && token != "procedure") {
+            printError("var or begin");
+            panic({"begin", "if", "while", "write", "read", "var"});
+        }
+        if (token == "begin" || token == "if" || token == "while" || token == "write" || token == "read") {
+            break;
+        } else {
+            goBackOneToken();
+            dc_loc(merge(S, {"begin"}));
+        }
+        token = lexicalAnalysis();
     }
     comandos(merge(S, {"end"}));
     token = lexicalAnalysis();
